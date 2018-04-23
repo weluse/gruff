@@ -95,11 +95,15 @@ class Gruff::SideBar < Gruff::Base
 
       line_diff = (@graph_right - @graph_left) / number_of_lines
       x = @graph_right - (line_diff * index) - 1
-      @d = @d.line(x, @graph_bottom, x, @graph_top)
-      diff = index - number_of_lines
-      marker_label = diff.abs * increment + @minimum_value
-
+      
+      # make sure that base line is always drawn even though marker count is set to 0 explicitly  
+      if @marker_count != 0 || (@marker_count == 0 && index != 0)
+        @d = @d.line(x, @graph_bottom, x, @graph_top)
+      end
+      
       unless @hide_line_numbers
+        diff = index - number_of_lines
+        marker_label = diff.abs * increment + @minimum_value
         @d.fill = @font_color
         @d.font = @font if @font
         @d.stroke = 'transparent'
